@@ -1,0 +1,19 @@
+{
+  "name": "mvnpm",
+  "version": "1.0.2",
+  "description": "A simpler package manager for github",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "mvnpm": "bin/mvnpm.js"
+  },
+  "keywords": ["github", "maven", "package manager", "java"],
+  "author": "Steve Hannah",
+  "license": "ISC",
+  "dependencies": {
+    "npm-name": "^3.0.0",
+    "shelljs": "^0.7.5"
+  }
+}

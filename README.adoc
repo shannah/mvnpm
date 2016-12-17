@@ -1,0 +1,49 @@
+= MVNPM - A GitHub-based Package Manager for Maven Projects
+
+== Synopsis
+
+Normally, if you develop a java library, you'll add it to maven central.  But setting yourself up to publish to maven central is hard.  If you're like me, you have all of your projects in separate Github repos already, which provides versioning and easy distribution already.  Adding things to Maven central is an extra step that just gets in the way.
+
+
+=== How it works:
+
+1. You add a mvnpm.json file to your project to track any dependent projects that you have hosted on Github.  These projects must be maven projects, or include a pom.xml file so that it can be used with a Maven project.
+2. Run `mvnpm` in your project directory, and it will automatically check the dependent projects out of Github, and build, and install them in your local maven repository.  That way when you come to build your current project, all of the dependencies will already be installed without having to check Maven central.
+
+== Installation
+
+----
+npm install mvnpm -g
+----
+
+== Usage
+
+=== Add a Dependency to Current Project
+
+Prerequisites:
+
+1. Current project is a maven project (i.e. has a pom.xml file).
+2. We want to add a dependency to a project whose Github repo is located at https://github.com/shannah/myproject
+3. Dependent project if a maven project (actually it could also be an ant-based project, but we'll cover that case later).
+
+----
+$ mvnpm add https://github.com/shannah/myproject
+----
+
+This will add my project as a dependency.  
+
+=== Installing Dependencies in Current Project
+
+Prerequisites:
+
+1. Current project is a maven project (i.e. has a pom.xml file).
+
+----
+$ mvnpm
+----
+
+
+
+
+
+
