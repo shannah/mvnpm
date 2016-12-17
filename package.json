@@ -1,6 +1,6 @@
 {
   "name": "mvnpm",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simpler package manager for github",
   "main": "index.js",
   "scripts": {
@@ -10,8 +10,10 @@
     "mvnpm": "bin/mvnpm.js"
   },
   "keywords": ["github", "maven", "package manager", "java"],
+  "homepage" : "https://github.com/shannah/mvnpm",
+  
   "author": "Steve Hannah",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "npm-name": "^3.0.0",
     "shelljs": "^0.7.5"

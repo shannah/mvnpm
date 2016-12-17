@@ -66,7 +66,11 @@ function loadDependencies(projectDir, mvnpmDir) {
             }
             
             // Now update the pom file
-            cd(modPath);
+            var subdir = '';
+            if (mod.path) {
+                subdir = '/' + mod.path;
+            }
+            cd(modPath + subdir);
             if (exec('mvnpm install').code !== 0) {
                 echo("Failed to install module "+mod.url);
                 exit(1);
@@ -163,13 +167,85 @@ function updateVersions(projectDir, pomFile) {
     fs.writeFileSync(pomFile, contents, 'utf-8');
 }
 
+function addDependency(projectDir, url, version, subdir) {
+    echo("[mvnpm] Adding dependency to "+url+" version "+version);
+    version = version || 'master';
+    cd(projectDir);
+    config = {
+        dependencies : []
+    };
+    
+    var origConfigContents = fs.readFileSync(projectDir+'/mvnpm.json');
+    if (test('-e', 'mvnpm.json')) {
+        config = JSON.parse(origConfigContents);
+    }
+    
+    if (!config.dependencies) {
+        config.dependencies = [];
+    }
+    
+    var mod = null;
+    config.dependencies.forEach(function(curr) {
+        if (mod !== null) {
+            return;
+        }
+        if (curr.url == url) {
+            mod = curr;
+            
+        }
+    });
+    if (mod === null) {
+        mod = {url: url, version: version}
+        if (subdir) {
+            mod.path = subdir;
+        }
+        config.dependencies.push(mod);
+    } else {
+        mod.url = url;
+        mod.version = version;
+        if (subdir) {
+            mod.path = subdir;
+        }
+    } 
+    
+    fs.writeFileSync(projectDir+'/mvnpm.json', JSON.stringify(config, null, '  '), 'utf-8');
+    /*
+    loadDependencies(projectDir, projectDir+'/.mvnpm');
+    
+    var loadedDeps = getDependencies(projectDir);
+    
+    
+    // Now check the pom file to see if we need to add the dependency there.
+    var pomFile = config.pom || 'pom.xml';
+    var pomStr = fs.readFileSync(projectDir+"/"+pomFile, 'utf-8');
+    //console.log("Pom is "+pomStr);
+    parseString(pomStr, function(err, doc) {
+        var project = doc.project;
+        console.log(project);
+        var found = false;
+        if (project.dependencies) {
+            var deps = project.dependencies;
+            deps.forEach(function(dep) {
+                if (dep.artifactId   
+            });
+        }
+    });
+    */
+        
+}
+
 
 var doInstallDeps = false;
 var doInstall = false;
+var doAddDependency = false;
 if (cmd == 'install') {
     doInstallDeps = true;
     doInstall = true;
 } else if (cmd == 'install-deps') {
+    doInstallDeps = true;
+} else if (cmd == 'add') {
+    doAddDependency = true;
+} else {
     doInstallDeps = true;
 }
 
@@ -181,6 +257,26 @@ if (doInstallDeps) {
 }
 if (doInstall) {
     install(currDir, mvnpmDir);
+}
+if (doAddDependency) {
+    if (process.argv.length < 4) {
+        echo("No dependency specified");
+        exit(1);
+    
+    }
+    var addUrl = process.argv[3];
+    
+    var version = 'master';
+    if (process.argv.length >= 5) {
+        version = process.argv[4];
+    }
+
+    var subdir = null;
+    if (process.argv.length >= 6) {
+        subdir = process.argv[5];
+    }
+
+    addDependency(currDir, addUrl, version, subdir);
 }
 
 
